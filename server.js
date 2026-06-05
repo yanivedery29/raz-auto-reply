@@ -3,13 +3,15 @@ const axios = require("axios");
 require("dotenv").config();
 
 const app = express();
-
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const PHONE_NUMBER_ID = "1182444134949873";
+
+const YOUR_TEST_PHONE = "972509119195";
+const META_DUMMY_PHONE = "16315551181";
 
 const AUTO_REPLY_MESSAGE = `שלום ותודה שפניתם לרז תיקון תריסים.
 
@@ -50,15 +52,19 @@ app.post("/webhook", async (req, res) => {
       req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
     if (message?.from) {
-      const customerPhone = message.from;
+      const incomingPhone = message.from;
 
-      console.log("Incoming message from:", customerPhone);
+      const replyToPhone =
+        incomingPhone === META_DUMMY_PHONE ? YOUR_TEST_PHONE : incomingPhone;
+
+      console.log("Incoming message from:", incomingPhone);
+      console.log("Reply will be sent to:", replyToPhone);
 
       await axios.post(
-        `https://graph.facebook.com/v23.0/${PHONE_NUMBER_ID}/messages`,
+        `https://graph.facebook.com/v25.0/${PHONE_NUMBER_ID}/messages`,
         {
           messaging_product: "whatsapp",
-          to: customerPhone,
+          to: replyToPhone,
           type: "text",
           text: {
             body: AUTO_REPLY_MESSAGE,
