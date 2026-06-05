@@ -3,6 +3,7 @@ const axios = require("axios");
 require("dotenv").config();
 
 const app = express();
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,8 @@ app.get("/webhook", (req, res) => {
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
+  console.log("Webhook GET received");
+
   if (mode === "subscribe" && token === VERIFY_TOKEN) {
     console.log("Webhook verified successfully");
     return res.status(200).send(challenge);
@@ -37,9 +40,14 @@ app.get("/webhook", (req, res) => {
 });
 
 app.post("/webhook", async (req, res) => {
+  console.log("====================================");
+  console.log("Webhook POST received");
+  console.log(JSON.stringify(req.body, null, 2));
+  console.log("====================================");
+
   try {
     const message =
-      req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+      req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
     if (message?.from) {
       const customerPhone = message.from;
@@ -47,7 +55,7 @@ app.post("/webhook", async (req, res) => {
       console.log("Incoming message from:", customerPhone);
 
       await axios.post(
-        `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`,
+        `https://graph.facebook.com/v23.0/${PHONE_NUMBER_ID}/messages`,
         {
           messaging_product: "whatsapp",
           to: customerPhone,
@@ -64,13 +72,17 @@ app.post("/webhook", async (req, res) => {
         }
       );
 
-      console.log("Auto reply sent");
+      console.log("Auto reply sent successfully");
+    } else {
+      console.log("No incoming message found in payload");
     }
 
-    res.sendStatus(200);
+    return res.sendStatus(200);
   } catch (error) {
-    console.error("Error sending auto reply:", error.response?.data || error.message);
-    res.sendStatus(500);
+    console.error("ERROR SENDING MESSAGE:");
+    console.error(error.response?.data || error.message);
+
+    return res.sendStatus(500);
   }
 });
 
