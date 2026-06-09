@@ -12,7 +12,7 @@ const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const AUTO_REPLY_ENABLED = process.env.AUTO_REPLY_ENABLED === "true";
 
 const YOUR_TEST_PHONE = "972509119195";
-const META_DUMMY_PHONE = "163155551181";
+const META_DUMMY_PHONE = "16315551181";
 
 const AUTO_REPLY_MESSAGE = `שלום ותודה שפניתם לרז תיקון תריסים.
 
