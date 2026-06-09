@@ -8,7 +8,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
-const PHONE_NUMBER_ID = "1182444134949873";
+const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 
 const YOUR_TEST_PHONE = "972509119195";
 const META_DUMMY_PHONE = "16315551181";
