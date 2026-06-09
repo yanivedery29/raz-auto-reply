@@ -93,7 +93,7 @@ app.post("/webhook", async (req, res) => {
   } catch (error) {
     console.error("ERROR SENDING MESSAGE:");
     console.error(error.response?.data || error.message);
-    return res.sendStatus(500);
+    return res.sendStatus(200);
   }
 });
 
